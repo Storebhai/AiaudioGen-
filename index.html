@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Lecture Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0"
+  }
+}
+</script>
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fadeInSlideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  .animate-fade-in-slide-up {
+    animation: fadeInSlideUp 0.5s ease-out forwards;
+  }
+  /* For staggered animations */
+  .stagger-children > * {
+    opacity: 0;
+    animation: fadeInSlideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+  
+  /* Class for the audio player entrance */
+  .player-enter {
+     transform: translateY(100%);
+     animation: player-slide-in 0.4s ease-out forwards;
+  }
+   @keyframes player-slide-in {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  /* Custom scrollbar for better aesthetics */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1e293b; /* slate-800 */
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #475569; /* slate-600 */
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #64748b; /* slate-500 */
+  }
+
+  /* Custom progress bar in lecture item */
+  .progress-bar-bg {
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-bar-fg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #06b6d4; /* cyan-500 */
+    opacity: 0.2;
+    transition: width 0.1s linear;
+    z-index: 1;
+  }
+  .progress-bar-content {
+    position: relative;
+    z-index: 2;
+  }
+</style>
+</head>
+  <body class="bg-slate-900 text-white bg-gradient-to-br from-slate-900 to-slate-800">
+    <div id="root"></div>
+    
+    <!-- PDF.js library for parsing PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+      if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+      }
+    </script>
+    <!-- jsPDF library for generating the Course Book PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

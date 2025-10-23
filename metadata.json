@@ -1,0 +1,7 @@
+{
+  "name": "AI Lecture Generator",
+  "description": "Generate mobile-friendly audio lectures and course books on any topic in seconds. Creates short, easy-to-understand audio courses with scripts, summaries, and quizzes.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
