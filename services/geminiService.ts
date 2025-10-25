@@ -1,14 +1,8 @@
 
+
 import { GoogleGenAI, Modality, Type } from '@google/genai';
 import { COURSE_OUTLINE_SCHEMA, LECTURE_DETAILS_SCHEMA } from '../constants';
 import type { Course, InputType, Lecture } from '../types';
-
-if (!process.env.API_KEY) {
-    throw new Error("API_KEY environment variable is not set.");
-}
-
-// Main AI instance for text/audio tasks
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export async function generateCourseOutline(
     inputType: InputType,
@@ -24,6 +18,7 @@ Based on the provided input, your task is to generate ONLY a course outline. The
 DO NOT generate the full scripts, summaries, or quizzes. Only the high-level outline is needed for this step.`;
     
     try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         let responseText: string;
         const modelName = 'gemini-2.5-flash';
 
@@ -98,7 +93,9 @@ DO NOT generate the full scripts, summaries, or quizzes. Only the high-level out
         console.error("Error generating course outline:", error);
         let errorMessage = "Failed to generate course outline from AI.";
         if (error instanceof Error) {
-            if (error.message.includes('JSON') || error instanceof SyntaxError) {
+            if (error.message.includes('API key') || error.message.includes('permission')) {
+                errorMessage = "API key is invalid or missing permissions. Please check your setup.";
+            } else if (error.message.includes('JSON') || error instanceof SyntaxError) {
                 errorMessage = "The AI returned a malformed response for the outline. Please try again.";
             } else {
                 errorMessage = error.message;
@@ -115,6 +112,7 @@ export async function generateLectureDetails(
     language: string
 ): Promise<Omit<Lecture, 'title' | 'goals'>> {
      try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const languageInstruction = `The entire output (duration, script, summary, quiz) MUST be in ${language}. For 'Hinglish', use a mix of Hindi and English, written in the Latin script.`;
         const prompt = `You are an expert instructional designer. You are writing one lecture for a course titled "${courseTitle}".
         
@@ -165,6 +163,7 @@ The output MUST be a single, valid JSON object that strictly adheres to the prov
 
 export async function generateLectureAudio(script: string, voice: string): Promise<string> {
     try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash-preview-tts',
             contents: [{ parts: [{ text: `Say with a ${voice === 'Puck' || voice === 'Charon' ? 'moderately energetic' : 'calm and clear'} tone: ${script}` }] }],
@@ -229,6 +228,7 @@ export async function getVideoOperationStatus(operation: any): Promise<any> {
 
 export async function improveScript(script: string): Promise<string> {
     try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const prompt = `You are a professional scriptwriter specializing in educational audio content.
 Review the following script and improve it. Make it more conversational, engaging, and easier to understand for a general audience.
 Use shorter sentences, natural pauses, and add storytelling elements where appropriate, without changing the core information.
